@@ -279,66 +279,27 @@
   }
 
 
-  async function uploadBlob(blob, mimeType, durationMs) {
-    const captchaToken = await getCaptchaTokenForUpload();
-    setStatus("Подготовка к отправке…");
-    
-    let presign = null;
-    try {
-      // 1. Получаем разрешение на загрузку у нашего API
-      presign = await api("/api/videos/presign-upload", {
-        method: "POST",
-        body: JSON.stringify({
-          mimeType,
-          durationMs: Math.round(durationMs),
-          captchaToken,
-        }),
-      });
-    } catch (e) {
-      console.error("Presign error:", e);
-      throw e; // Прокидываем ошибку дальше в обработчик
-    } finally {
-      resetCaptcha();
-    }
+async function uploadBlob(blob, mimeType, durationMs) {
+    setStatus("Подготовка...");
+    const presign = await api("/api/videos/presign-upload", { method: "POST", body: "{}" });
 
-    if (!presign || !presign.uploadUrl) {
-      throw new Error("Не удалось получить ссылку для загрузки");
-    }
+    setStatus("Загрузка видео...");
+    const formData = new FormData();
+    formData.append('file', blob, 'video.webm'); // 'file' должно совпадать с аргументом в Python
 
-    setStatus("Загрузка видео на сервер…");
-
-    // 2. Самый важный момент: Прямой PUT запрос на Amvera
-    // Добавляем API к пути и ОБЯЗАТЕЛЬНО прокидываем Session ID в заголовки
     const putRes = await fetch(API + presign.uploadUrl, {
       method: "PUT",
-      headers: { 
-        "Content-Type": presign.mimeType || mimeType,
-        "x-session-id": sessionId // Бэкенд ждет этот заголовок для проверки!
-      },
-      body: blob,
+      headers: { "x-session-id": sessionId },
+      body: formData // Шлем форму, а не голый блоб!
     });
 
-    if (!putRes.ok) {
-      console.error("Upload failed status:", putRes.status);
-      throw new Error("upload_failed");
-    }
+    if (!putRes.ok) throw new Error("upload_failed");
 
-    setStatus("Финализация…");
-
-    // 3. Подтверждаем бэкенду, что файл загружен, чтобы получить баллы
-    try {
-      const done = await api("/api/videos/complete", {
-        method: "POST",
-        body: JSON.stringify({ videoId: presign.videoId }),
-      });
-      
-      balance = done.balance;
-      updateUi();
-      setStatus("Кружок успешно отправлен!");
-    } catch (e) {
-      console.error("Complete error:", e);
-      throw e;
-    }
+    setStatus("Сохранение...");
+    const done = await api("/api/videos/complete", { method: "POST", body: "{}" });
+    balance = done.balance;
+    updateUi();
+    setStatus("Готово!");
   }
 
 
