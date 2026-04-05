@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const API = "";
+  const API = "https://norminternet-vapitow854.amvera.io";
 
   const preview = document.getElementById("preview");
   const playback = document.getElementById("playback");
