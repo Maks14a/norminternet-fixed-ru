@@ -1,0 +1,259 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
+  background: #0e1621;
+  color: #e7edf3;
+  overflow: hidden;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+video,
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+.app {
+  min-height: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 1rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bar {
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: #8b9bab;
+}
+
+.stats {
+  margin-top: 0.75rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: #17212b;
+  font-size: 0.8rem;
+  color: #7cb8ff;
+}
+
+.stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.circle-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.circle-wrap {
+  position: relative;
+  width: min(72vw, 280px);
+  height: min(72vw, 280px);
+  border-radius: 50%;
+  overflow: hidden;
+  background: #131d27;
+  box-shadow:
+    0 0 0 3px #2b5278,
+    0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.circle-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  display: block;
+}
+
+.circle-video.hidden {
+  display: none;
+}
+
+.timer {
+  margin-top: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  color: #e7edf3;
+  text-align: center;
+  pointer-events: none;
+  max-height: 0;
+  margin-bottom: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.2s ease,
+    opacity 0.15s ease,
+    margin-top 0.2s ease;
+}
+
+.timer.visible {
+  max-height: 3rem;
+  opacity: 1;
+  margin-top: 0.75rem;
+}
+
+.record-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0 rgba(255, 80, 80, 0.35);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.record-ring.active {
+  opacity: 1;
+  animation: pulse-ring 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 0 rgba(255, 80, 80, 0.45);
+  }
+  50% {
+    box-shadow: inset 0 0 0 8px rgba(255, 80, 80, 0.15);
+  }
+}
+
+.status {
+  min-height: 1.25rem;
+  margin: 0;
+  font-size: 0.85rem;
+  color: #8b9bab;
+  text-align: center;
+}
+
+.status.error {
+  color: #ff8686;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.captcha-mount {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.btn-record {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: none;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, background 0.12s ease;
+  touch-action: manipulation;
+}
+
+.btn-record:active {
+  transform: scale(0.96);
+}
+
+.btn-record:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-record-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #e53935;
+  box-shadow: 0 4px 16px rgba(229, 57, 53, 0.45);
+  transition:
+    border-radius 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn-record.recording .btn-record-inner {
+  border-radius: 12px;
+  width: 36%;
+  height: 36%;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  max-width: 320px;
+  background: #5288c1;
+  color: #fff;
+  transition: opacity 0.15s ease, transform 0.12s ease;
+  touch-action: manipulation;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn.secondary {
+  background: #394654;
+  color: #dbe7f2;
+}
